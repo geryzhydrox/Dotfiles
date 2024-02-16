@@ -21,13 +21,11 @@ font pango:monospace 8
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
-exec --no-startup-id dex-autostart --autostart --environment i3
+exec --no-startup-id dex --autostart --environment i3
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 
-exec_always feh --bg-scale /home/gerald/Downloads/cyberpunk_wallpaper_2.jpg
-exec --no-startup-id "xrandr --output DisplayPort-1 --right-of HDMI-A-0"
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
@@ -35,7 +33,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
-#exec --no-startup-id polybar
+exec --no-startup-id nitrogen --restore
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -43,21 +41,29 @@ bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+for_window [class="floating"] floating enable 
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
+# move tiling windows via drag & drop by left-clicking into the title bar,
+# or left-clicking anywhere into the window while holding the floating modifier.
+tiling_drag modifier titlebar
+
 # start a terminal
-bindsym $mod+Return exec /home/gerald/.cargo/bin/alacritty
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
-
 # start dmenu (a program launcher)
-#bindsym $mod+d exec --no-startup-id "dmenu_run -nf '#BBBBBB' -nb '#222222' -sb '#005577' -sf '#EEEEEE' -fn 'monospace-10'"
+bindsym $mod+d exec --no-startup-id xfce4-appfinder --class floating
+bindsym $mod+w exec xfce4-popup-whiskermenu
+bindsym $mod+Shift+s exec xfce4-screenshooter
+bindsym $mod+g exec alacritty -e bash -c "sh /home/gerald/Desktop/openGodotFile.sh"
+bindsym $mod+o exec alacritty -e nvim
 # A more modern dmenu replacement is rofi:
-bindsym $mod+d exec "rofi -modi drun,run -show drun"
+# bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
@@ -97,7 +103,7 @@ bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
+bindsym $mod+t layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
@@ -112,10 +118,6 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
-# "alt tab"
-bindsym $mod+t exec "rofi -modi drun, run -show window"
-bindsym $mod+o exec /home/gerald/Desktop/Obsidian-1.4.16.AppImage
-bindsym $mod+g exec /home/gerald/.cargo/bin/alacritty -e "/home/gerald/Desktop/openGodotFile.sh"
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1"
@@ -153,6 +155,16 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
+bindsym $mod+Control+1 move container to workspace number $ws1; workspace number $ws1
+bindsym $mod+Control+2 move container to workspace number $ws2; workspace number $ws2
+bindsym $mod+Control+3 move container to workspace number $ws3; workspace number $ws3
+bindsym $mod+Control+4 move container to workspace number $ws4; workspace number $ws4
+bindsym $mod+Control+5 move container to workspace number $ws5; workspace number $ws5
+bindsym $mod+Control+6 move container to workspace number $ws6; workspace number $ws6
+bindsym $mod+Control+7 move container to workspace number $ws7; workspace number $ws7
+bindsym $mod+Control+8 move container to workspace number $ws8; workspace number $ws8
+bindsym $mod+Control+9 move container to workspace number $ws9; workspace number $ws9
+bindsym $mod+Control+0 move container to workspace number $ws10; workspace number $ws10
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -160,10 +172,11 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-# open i3 config file with helix
-#bindsym $mod+h+c exec "hx /home/gerald/.config/i3/config"
 
-
+default_border pixel 2
+default_floating_border pixel 2 
+gaps inner 10
+gaps outer -10
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
@@ -190,33 +203,12 @@ mode "resize" {
 }
 
 bindsym $mod+r mode "resize"
-default_border pixel 2
-gaps inner 10
-gaps outer 0
-# class                 border  bground text    indicator child_border
-client.focused          #83CAFA #51A2DA #FFFFFF #83CAFA   #51A2DA
-client.focused_inactive #8C8C8C #4C4C4C #FFFFFF #4C4C4C   #8C8C8C
-client.unfocused        #4C4C4C #222222 #888888 #292D2E   #222222
-client.urgent           #EC69A0 #DB3279 #FFFFFF #DB3279   #DB3279
-client.placeholder      #000000 #0C0C0C #FFFFFF #000000   #0C0C0C
-
-client.background       #FFFFFF
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-bar {
-  position top
-  font pango:Hack 12
-  colors {
-    background #282a36
-    statusline #FFFFFF
-    separator  #f8f8f2
-    # colour of border, background, and text
-    focused_workspace  #8be9fd #282a36 #f8f8f2
-    active_workspace   #6272a4 #282a36 #f8f8f2
-    inactive_workspace #282a36 #282a36 #f8f8f2
-    urgent_workspace   #ff5555 #282a36 #f8f8f2
-    binding_mode       #282a36 #282a36 #f8f8f2
- }
-  status_command i3status
-}
+# bar {
+#        status_command i3status
+#}
+
+
+

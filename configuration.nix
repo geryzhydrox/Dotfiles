@@ -163,12 +163,13 @@ in
       nnn
       pywal
       alacritty-theme
+      ueberzugpp
       # Productivity or whatever
       godot_4
       cura
       pandoc
       zathura
-      texliveSmall
+      texliveTeTeX
       libreoffice-fresh
       # Multimedia
       youtube-dl
@@ -250,6 +251,7 @@ in
     options = {
       relativenumber = true;
       shiftwidth = 2;
+      showmode = false;
     };
     globals = {
       mapleader = " ";
@@ -283,6 +285,10 @@ in
       lualine.enable = true;
       telescope.enable = true;
       mkdnflow.enable = true;
+      #image = {
+	#enable = true;
+	#backend = "ueberzug";
+      #};
       luasnip.enable = true;
       nvim-cmp = {
         enable = true;

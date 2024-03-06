@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<channel name="xfce4-desktop" version="1.0">
+  <property name="backdrop" type="empty">
+    <property name="screen0" type="empty">
+      <property name="monitorDP-1" type="empty">
+        <property name="workspace0" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/nix/store/aj77awya5sijsjvxzavyhss68x0vg1ap-xfdesktop-4.18.1/share/backgrounds/xfce/xfce-leaves.svg"/>
+        </property>
+        <property name="workspace1" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/nix/store/aj77awya5sijsjvxzavyhss68x0vg1ap-xfdesktop-4.18.1/share/backgrounds/xfce/xfce-shapes.svg"/>
+        </property>
+        <property name="workspace2" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/nix/store/aj77awya5sijsjvxzavyhss68x0vg1ap-xfdesktop-4.18.1/share/backgrounds/xfce/xfce-shapes.svg"/>
+        </property>
+        <property name="workspace3" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/nix/store/aj77awya5sijsjvxzavyhss68x0vg1ap-xfdesktop-4.18.1/share/backgrounds/xfce/xfce-shapes.svg"/>
+        </property>
+      </property>
+      <property name="monitorHDMI-1" type="empty">
+        <property name="workspace0" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/home/gerald/Pictures/neon-purple-wallpaper-4k.jpg"/>
+        </property>
+        <property name="workspace1" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/nix/store/aj77awya5sijsjvxzavyhss68x0vg1ap-xfdesktop-4.18.1/share/backgrounds/xfce/xfce-shapes.svg"/>
+        </property>
+        <property name="workspace2" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/nix/store/aj77awya5sijsjvxzavyhss68x0vg1ap-xfdesktop-4.18.1/share/backgrounds/xfce/xfce-shapes.svg"/>
+        </property>
+        <property name="workspace3" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/nix/store/aj77awya5sijsjvxzavyhss68x0vg1ap-xfdesktop-4.18.1/share/backgrounds/xfce/xfce-shapes.svg"/>
+        </property>
+      </property>
+    </property>
+  </property>
+  <property name="last" type="empty">
+    <property name="window-width" type="int" value="870"/>
+    <property name="window-height" type="int" value="581"/>
+  </property>
+  <property name="desktop-icons" type="empty">
+    <property name="file-icons" type="empty">
+      <property name="show-filesystem" type="bool" value="true"/>
+      <property name="show-removable" type="bool" value="true"/>
+    </property>
+  </property>
+</channel>

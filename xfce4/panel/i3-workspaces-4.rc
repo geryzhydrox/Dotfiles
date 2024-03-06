@@ -1,0 +1,11 @@
+use_css=false
+normal_color=rgb(49,116,143)
+focused_color=rgb(156,207,216)
+urgent_color=rgb(235,111,146)
+mode_color=rgb(255,0,0)
+visible_color=rgb(49,116,143)
+css=.workspace { }\n.workspace.visible { }\n.workspace.focused { font-weight: bold; }\n.workspace.urgent { color: red; }\n.binding-mode { }\n
+strip_workspace_numbers=false
+auto_detect_outputs=false
+output=
+

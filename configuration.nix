@@ -171,12 +171,12 @@ in
       zathura
       texliveTeTeX
       libreoffice-fresh
+      R
       # Multimedia
       youtube-dl
       mpv
       obs-studio
       libsForQt5.kdenlive
-      helvum
       pavucontrol
       mpvScripts.cutter
       ffmpeg
@@ -191,7 +191,10 @@ in
     ];
   };
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [ "nix-2.16.2" ];
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -200,9 +203,11 @@ in
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     killall
+    ntfs3g
     xfce.xfce4-i3-workspaces-plugin
     xfce.xfce4-whiskermenu-plugin
     xfce.xfce4-panel-profiles
+    xfce.xfce4-pulseaudio-plugin
     libgcc
     xclip
     libsForQt5.breeze-icons
@@ -258,14 +263,29 @@ in
     };
     keymaps = [
       {
-      	key = "<leader>0"; 
+	key = "<leader>0"; 
 	action = "<cmd>Alpha<CR>";
-	mode = [ "n" ];
+	mode = [ "n" "v" ];
       }
       {
-      	key = "<leader>f";
+	key = "<leader>f";
 	action = "<cmd>Telescope fd<CR>";
-	mode = [ "n" ];
+	mode = [ "n" "v" ];
+      }
+      {
+	key = "<leader>t";
+	action = "<cmd>NvimTreeToggle<CR>";
+	mode = [ "n" "v" ];
+      }
+      {
+	key = "<leader><CR>";
+	action = "<cmd>w<CR>";
+	mode = [ "n" "v" ];
+      }
+      {
+	key = "<leader><Backspace>";
+	action = "<cmd>wq<CR>";
+	mode = [ "n" "v" ];
       }
       {
 	key = "ää";
@@ -292,28 +312,28 @@ in
       luasnip.enable = true;
       nvim-cmp = {
         enable = true;
-	autoEnableSources = true;
-	sources = [
-	  {name = "nvim_lsp";}
+    autoEnableSources = true;
+    sources = [
+      {name = "nvim_lsp";}
         ];
-	mapping = {
-	  "<CR>" = "cmp.mapping.confirm({ select = true })";
-	  "<Tab>" = {
-	    action = "cmp.mapping.select_next_item()";
-	    modes = [ "i" "s" ];
-	  };
-	  "<Down>" = {
-	    action = "cmp.mapping.select_next_item()";
-	    modes = [ "i" "s" ];
-	  };
-	  "<S-Tab>" = {
-	    action = "cmp.mapping.select_prev_item()";
-	    modes = [ "i" "s" ];
-	  };
-	  "<Up>" = {
-	    action = "cmp.mapping.select_prev_item()";
-	    modes = [ "i" "s" ];
-	  };
+    mapping = {
+      "<CR>" = "cmp.mapping.confirm({ select = true })";
+      "<Tab>" = {
+        action = "cmp.mapping.select_next_item()";
+        modes = [ "i" "s" ];
+      };
+      "<Down>" = {
+        action = "cmp.mapping.select_next_item()";
+        modes = [ "i" "s" ];
+      };
+      "<S-Tab>" = {
+        action = "cmp.mapping.select_prev_item()";
+        modes = [ "i" "s" ];
+      };
+      "<Up>" = {
+        action = "cmp.mapping.select_prev_item()";
+        modes = [ "i" "s" ];
+      };
         };
       };	
       cmp-nvim-lsp.enable = true;
@@ -340,12 +360,16 @@ in
 	desc = "Edit i3 config";
       };
       "Pmd" = {
-	command = '':!pandoc -f commonmark_x -t pdf "%" -o /tmp/"%:t:r"'';
+	command = '':!pandoc -f commonmark_x -t pdf --pdf-engine=xelatex -V mainfont:FreeSans "%" -o /tmp/"%:t:r"'';
 	desc = "Compile current markdown file as pdf in /tmp";
       };
       "Zmd" = {
-	command = '':!zathura /tmp/"%:t:r" &'';
+	command = '':!kill $(ps -e | grep zathura | awk '{print $1}'); zathura /tmp/"%:t:r" &'';
 	desc = "Read current pdf file in /tmp with Zathura";
+      };
+      "Pzmd" = {
+	command = '':!pandoc -f commonmark_x -t pdf --pdf-engine=xelatex -V mainfont:FreeSans "%" | zathura - &'';
+	desc = "Compile current markdown file as pdf and pipe into zathura";
       };
       "Nt" = {
 	command = ":NvimTreeToggle";
@@ -368,39 +392,39 @@ in
       local alpha = require("alpha")
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.header.val = {
-	  "          ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖          ",
-	  "          ▜███▙       ▜███▙  ▟███▛          ",
-	  "           ▜███▙       ▜███▙▟███▛           ",
-	  "            ▜███▙       ▜██████▛            ",
-	  "     ▟█████████████████▙ ▜████▛     ▟▙      ",
-	  "    ▟███████████████████▙ ▜███▙    ▟██▙     ",
-	  "           ▄▄▄▄▖           ▜███▙  ▟███▛     ",
-	  "          ▟███▛             ▜██▛ ▟███▛      ",
-	  "         ▟███▛               ▜▛ ▟███▛       ",
-	  "▟███████████▛                  ▟██████████▙ ",
-	  "▜██████████▛                  ▟███████████▛ ",
-	  "      ▟███▛ ▟▙               ▟███▛          ",
-	  "     ▟███▛ ▟██▙             ▟███▛           ",
-	  "    ▟███▛  ▜███▙           ▝▀▀▀▀            ",
-	  "    ▜██▛    ▜███▙ ▜██████████████████▛      ",
-	  "     ▜▛     ▟████▙ ▜████████████████▛       ",
-	  "           ▟██████▙       ▜███▙             ",
-	  "          ▟███▛▜███▙       ▜███▙            ",
-	  "         ▟███▛  ▜███▙       ▜███▙           ",
-	  "         ▝▀▀▀    ▀▀▀▀▘       ▀▀▀▘           ",
-	}
+      "          ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖          ",
+      "          ▜███▙       ▜███▙  ▟███▛          ",
+      "           ▜███▙       ▜███▙▟███▛           ",
+      "            ▜███▙       ▜██████▛            ",
+      "     ▟█████████████████▙ ▜████▛     ▟▙      ",
+      "    ▟███████████████████▙ ▜███▙    ▟██▙     ",
+      "           ▄▄▄▄▖           ▜███▙  ▟███▛     ",
+      "          ▟███▛             ▜██▛ ▟███▛      ",
+      "         ▟███▛               ▜▛ ▟███▛       ",
+      "▟███████████▛                  ▟██████████▙ ",
+      "▜██████████▛                  ▟███████████▛ ",
+      "      ▟███▛ ▟▙               ▟███▛          ",
+      "     ▟███▛ ▟██▙             ▟███▛           ",
+      "    ▟███▛  ▜███▙           ▝▀▀▀▀            ",
+      "    ▜██▛    ▜███▙ ▜██████████████████▛      ",
+      "     ▜▛     ▟████▙ ▜████████████████▛       ",
+      "           ▟██████▙       ▜███▙             ",
+      "          ▟███▛▜███▙       ▜███▙            ",
+      "         ▟███▛  ▜███▙       ▜███▙           ",
+      "         ▝▀▀▀    ▀▀▀▀▘       ▀▀▀▘           ",
+    }
       dashboard.section.buttons.val = {
-	dashboard.button( "e", "  New file" , ":ene <BAR> startinsert <CR>"),
-	dashboard.button( "f", "  Find file", ":Telescope find_files<CR>"),
-	dashboard.button( "r", "  Recent"   , ":Telescope oldfiles<CR>"),
-	dashboard.button( "c", "󰜗  Nix Configuration" , ":e /etc/nixos/configuration.nix<CR>"),
-	dashboard.button( "q", "󰿅  Quit Nixvim", ":qa!<CR>"),
+    dashboard.button( "e", "  New file" , ":ene <BAR> startinsert <CR>"),
+    dashboard.button( "f", "  Find file", ":Telescope find_files<CR>"),
+    dashboard.button( "r", "  Recent"   , ":Telescope oldfiles<CR>"),
+    dashboard.button( "c", "󰜗  Nix Configuration" , ":e /etc/nixos/configuration.nix<CR>"),
+    dashboard.button( "q", "󰿅  Quit Nixvim", ":qa!<CR>"),
       }
       alpha.setup(dashboard.opts)
       vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
     '';
   };
-  # List services that you want to enable:
+ # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;

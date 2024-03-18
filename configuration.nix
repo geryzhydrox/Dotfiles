@@ -66,6 +66,7 @@ in
   # Xfce, i3, lightdm
   services.xserver = {
     enable = true;
+    #videoDrivers = [ "amdgpu" ];
     displayManager.lightdm = {
       enable = true;
       greeters.slick.enable = true;
@@ -110,8 +111,8 @@ in
   hardware.opengl = {
     driSupport = true;
     driSupport32Bit = true;
-    extraPackages = [ pkgs.amdvlk ];
-    extraPackages32 = [ pkgs.driversi686Linux.amdvlk ];
+    #extraPackages = [ pkgs.amdvlk ];
+    #extraPackages32 = [ pkgs.driversi686Linux.amdvlk ];
   };
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
@@ -138,7 +139,16 @@ in
     isNormalUser = true;
     description = "gerald";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
+    packages = with pkgs;
+    let
+    customR = rWrapper.override{ packages = with rPackages;
+    [ 
+      ggplot2
+      tidyverse
+      psych
+    ];};
+    in
+    [
       # Essentials: Browser, editor, terminal, WM, etc.
       firefox
       chromium
@@ -171,7 +181,9 @@ in
       zathura
       texliveSmall
       libreoffice-fresh
-      R
+      customR
+      rstudio
+      rstudioWrapper
       # Multimedia
       youtube-dl
       mpv
@@ -183,7 +195,7 @@ in
       musescore
       cmus
       audacity
-      lutris
+      #lutris
       # Imaging, partitioning, etc.
       rpi-imager
       gparted

@@ -51,12 +51,12 @@ in
   # services.xserver.enable = true;
 
   # Enable xdg portal
-  #xdg.portal = {
-    #enable = true;
-    #extraPortals = [pkgs.xdg-desktop-portal-gtk];
-  #};
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+  };
   # Enable flatpak.
-  #services.flatpak.enable = true;
+  services.flatpak.enable = true;
 
   # Enable the XFCE Desktop Environment.
   #services.xserver.displayManager.lightdm.enable = true;
@@ -175,15 +175,21 @@ in
       alacritty-theme
       ueberzugpp
       # Productivity or whatever
-      godot_4
       cura
       pandoc
       zathura
       texliveSmall
       libreoffice-fresh
+      # Development
+      godot_4
       customR
       rstudio
       rstudioWrapper
+      elixir
+      #python3
+      python2
+      gnumake
+      gcc
       # Multimedia
       youtube-dl
       mpv
@@ -205,7 +211,7 @@ in
   # Allow unfree packages
   nixpkgs.config = {
     allowUnfree = true;
-    permittedInsecurePackages = [ "nix-2.16.2" ];
+    permittedInsecurePackages = [ "nix-2.16.2" "python-2.7.18.7" ];
   };
 
   # List packages installed in system profile. To search, run:
@@ -213,6 +219,7 @@ in
   environment.systemPackages = with pkgs; [
     # neovim
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    basez
     wget
     killall
     ntfs3g
@@ -247,14 +254,19 @@ in
     enable = true;
   #   enableSSHSupport = true;
   };
-  programs.bash.shellAliases = {
-    nixcfg = "sudo nvim /etc/nixos/configuration.nix";
-    nixrecfg = "sudo nixos-rebuild switch";
+  programs.bash = {
+    shellAliases = {
+     nixcfg = "sudo nvim /etc/nixos/configuration.nix";
+     nixrecfg = "sudo nixos-rebuild switch";
+    };
+    promptInit = ''
+      PS1="\[\033[01;32m\]\u \[\033[00m\]\[\033[02;37m\] \w \[\033[00m\] \[\033[01;36m\]» \[\033[00m\]"
+    '';
   };
   programs.nixvim = {
     enable = true;
     clipboard.register = "unnamedplus";
-    luaLoader.enable = true;
+    #luaLoader.enable = true;
     #colorschemes.nord.enable = true;
     colorschemes.rose-pine = {
       enable = true;
@@ -290,16 +302,6 @@ in
 	mode = [ "n" "v" ];
       }
       {
-	key = "<leader><CR>";
-	action = "<cmd>w<CR>";
-	mode = [ "n" "v" ];
-      }
-      {
-	key = "<leader><Backspace>";
-	action = "<cmd>wq<CR>";
-	mode = [ "n" "v" ];
-      }
-      {
 	key = "ää";
 	action = "<Esc>";
 	mode = [ "i" "v" ];
@@ -307,7 +309,6 @@ in
     ];
     extraPlugins = with pkgs.vimPlugins; [ 
       tabular
-      cmp_luasnip
       nvim-dap
       nvim-web-devicons
       suda-vim
@@ -322,35 +323,50 @@ in
 	#backend = "ueberzug";
       #};
       luasnip.enable = true;
+      cmp_luasnip.enable = true;
       nvim-cmp = {
         enable = true;
-      autoEnableSources = true;
-      sources = [
-	{name = "nvim_lsp";}
-      ];
-    mapping = {
-      "<CR>" = "cmp.mapping.confirm({ select = true })";
-      "<Tab>" = {
-        action = "cmp.mapping.select_next_item()";
-        modes = [ "i" "s" ];
-      };
-      "<Down>" = {
-        action = "cmp.mapping.select_next_item()";
-        modes = [ "i" "s" ];
-      };
-      "<S-Tab>" = {
-        action = "cmp.mapping.select_prev_item()";
-        modes = [ "i" "s" ];
-      };
-      "<Up>" = {
-        action = "cmp.mapping.select_prev_item()";
-        modes = [ "i" "s" ];
-      };
+	autoEnableSources = true;
+      	sources = [
+	  {name = "luasnip";}
+	  {name = "nvim_lsp";}
+	  {name = "path";}
+	  {name = "buffer";}
+	  #{name = "omni";}
+	  #{name = "ultisnips";}
+	];
+	extraOptions = {
+	  snippet.expand = 
+	  ''
+	  '';
+	};
+	mapping = {
+	  "<CR>" = "cmp.mapping.confirm({ select = true })";
+	  #"<CR>" = "luasnip.expand()";
+	  "<Tab>" = {
+      	    action = "cmp.mapping.select_next_item()";
+      	    modes = [ "i" "s" ];
+      	  };
+      	  "<Down>" = {
+      	    action = "cmp.mapping.select_next_item()";
+      	    modes = [ "i" "s" ];
+      	  };
+      	  "<S-Tab>" = {
+      	    action = "cmp.mapping.select_prev_item()";
+      	    modes = [ "i" "s" ];
+      	  };
+      	  "<Up>" = {
+      	    action = "cmp.mapping.select_prev_item()";
+      	    modes = [ "i" "s" ];
+      	  };
         };
       };	
       cmp-nvim-lsp.enable = true;
       nvim-tree.enable = true;
-      treesitter.enable = true;
+      treesitter = { 
+	enable = true;
+	incrementalSelection.enable = true;
+      };
       dap.enable = true;
       lsp = {
         enable = true;
@@ -359,6 +375,10 @@ in
 	  gdscript.autostart = true;
 	  nixd.enable = true;
 	  nixd.autostart = true;
+	  elixirls.enable = true;
+	  elixirls.autostart = true;
+	  pylsp.enable = true;
+	  pylsp.autostart = true;
 	};
       };
     };
@@ -401,9 +421,9 @@ in
       };
     };
     extraConfigLua = ''
-      local alpha = require("alpha")
-      local dashboard = require("alpha.themes.dashboard")
-      dashboard.section.header.val = {
+    local alpha = require("alpha")
+    local dashboard = require("alpha.themes.dashboard")
+    dashboard.section.header.val = {
       "          ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖          ",
       "          ▜███▙       ▜███▙  ▟███▛          ",
       "           ▜███▙       ▜███▙▟███▛           ",
@@ -425,15 +445,21 @@ in
       "         ▟███▛  ▜███▙       ▜███▙           ",
       "         ▝▀▀▀    ▀▀▀▀▘       ▀▀▀▘           ",
     }
-      dashboard.section.buttons.val = {
-    dashboard.button( "e", "  New file" , ":ene <BAR> startinsert <CR>"),
-    dashboard.button( "f", "  Find file", ":Telescope find_files<CR>"),
-    dashboard.button( "r", "  Recent"   , ":Telescope oldfiles<CR>"),
-    dashboard.button( "c", "󰜗  Nix Configuration" , ":e /etc/nixos/configuration.nix<CR>"),
-    dashboard.button( "q", "󰿅  Quit Nixvim", ":qa!<CR>"),
-      }
-      alpha.setup(dashboard.opts)
-      vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
+    dashboard.section.buttons.val = {
+     dashboard.button( "e", "  New file" , ":ene <BAR> startinsert <CR>"),
+     dashboard.button( "f", "  Find file", ":Telescope find_files<CR>"),
+     dashboard.button( "r", "  Recent"   , ":Telescope oldfiles<CR>"),
+     dashboard.button( "c", "󰜗  Nix Configuration" , ":e /etc/nixos/configuration.nix<CR>"),
+     dashboard.button( "q", "󰿅  Quit Nixvim", ":qa!<CR>"),
+    }
+    alpha.setup(dashboard.opts)
+    vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
+    do
+      local cmp = require('cmp')
+      cmp.setup({
+      	["snippet"] = {["expand"] = function(args) require('luasnip').lsp_expand(args.body)  end},
+      })
+    end
     '';
   };
   # List services that you want to enable:

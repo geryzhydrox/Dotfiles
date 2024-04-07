@@ -109,9 +109,12 @@ in
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   hardware.opengl = {
+    enable = true;
     driSupport = true;
     driSupport32Bit = true;
-    #extraPackages = [ pkgs.amdvlk ];
+    extraPackages = with pkgs; [
+      amdvlk
+    ]; 
     #extraPackages32 = [ pkgs.driversi686Linux.amdvlk ];
   };
   hardware.bluetooth.enable = true;
@@ -180,6 +183,7 @@ in
       zathura
       texliveSmall
       libreoffice-fresh
+
       # Development
       godot_4
       customR
@@ -190,6 +194,7 @@ in
       python2
       gnumake
       gcc
+
       # Multimedia
       youtube-dl
       mpv
@@ -201,7 +206,26 @@ in
       musescore
       cmus
       audacity
-      #lutris
+
+      ## Gaming?
+      #wine
+      #winetricks
+      #protontricks
+      #vulkan-tools
+      ## Lutris
+      ##lutris-unwrapped  # (not needed)
+      lutris
+      ## Extra dependencies
+      ## https://github.com/lutris/docs/
+      #gnutls
+      #openldap
+      #libgpgerror
+      #freetype
+      #sqlite
+      #libxml2
+      #xml2
+      #SDL2
+
       # Imaging, partitioning, etc.
       rpi-imager
       gparted
@@ -244,11 +268,11 @@ in
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-  };
+  #programs.steam = {
+    #enable = true;
+    #remotePlay.openFirewall = true;
+    #dedicatedServer.openFirewall = true;
+  #};
 
   programs.gnupg.agent = {
     enable = true;

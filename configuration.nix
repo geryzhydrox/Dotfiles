@@ -4,16 +4,18 @@
 
 { config, pkgs, ... }:
 let 
-  nixvim = import (builtins.fetchGit {
-    url = "https://github.com/nix-community/nixvim";
-    ref = "nixos-23.11";
-    });
+  #nixvim = import (builtins.fetchGit {
+    #url = "https://github.com/nix-community/nixvim";
+    #ref = "nixos-23.11";
+    #});
+  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz";
 in
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      nixvim.nixosModules.nixvim
+      (import "${home-manager}/nixos")
+      #nixvim.nixosModules.nixvim
     ];
 
   # Bootloader.
@@ -190,6 +192,9 @@ in
       rstudio
       rstudioWrapper
       elixir
+      elixir-ls
+      marksman
+      nixd
       #python3
       python2
       gnumake
@@ -231,6 +236,32 @@ in
       gparted
       gnome.gnome-disk-utility
     ];
+  };
+  home-manager.users.gerald = {
+  	home.stateVersion = "23.11";
+	programs.neovim = {
+		enable = true;
+		plugins = with pkgs.vimPlugins; [
+			rose-pine
+			alpha-nvim
+			telescope-nvim
+			nvim-tree-lua
+			tabular
+			nvim-dap
+			nvim-web-devicons
+			suda-vim
+			mkdnflow-nvim
+			lualine-nvim
+			luasnip
+			nvim-treesitter
+			nvim-cmp
+			cmp_luasnip
+			cmp-nvim-lsp
+			nvim-lspconfig
+			nvim-treesitter.withAllGrammars
+		];
+	};
+
   };
   # Allow unfree packages
   nixpkgs.config = {
@@ -285,205 +316,6 @@ in
     };
     promptInit = ''
       PS1="\[\033[01;32m\]\u \[\033[00m\]\[\033[02;37m\] \w \[\033[00m\] \[\033[01;36m\]» \[\033[00m\]"
-    '';
-  };
-  programs.nixvim = {
-    enable = true;
-    clipboard.register = "unnamedplus";
-    #luaLoader.enable = true;
-    #colorschemes.nord.enable = true;
-    colorschemes.rose-pine = {
-      enable = true;
-      transparentBackground = true;
-      transparentFloat = true;
-    };
-    #highlight = {
-      #NonText.blend = 0;
-      #Normal.blend = 0;
-    #};
-    options = {
-      relativenumber = true;
-      shiftwidth = 2;
-      showmode = false;
-    };
-    globals = {
-      mapleader = " ";
-    };
-    keymaps = [
-      {
-	key = "<leader>0"; 
-	action = "<cmd>Alpha<CR>";
-	mode = [ "n" "v" ];
-      }
-      {
-	key = "<leader>f";
-	action = "<cmd>Telescope fd<CR>";
-	mode = [ "n" "v" ];
-      }
-      {
-	key = "<leader>t";
-	action = "<cmd>NvimTreeToggle<CR>";
-	mode = [ "n" "v" ];
-      }
-      {
-	key = "ää";
-	action = "<Esc>";
-	mode = [ "i" "v" ];
-      }
-    ];
-    extraPlugins = with pkgs.vimPlugins; [ 
-      tabular
-      nvim-dap
-      nvim-web-devicons
-      suda-vim
-    ];
-    plugins = {
-      alpha.enable = true;
-      lualine.enable = true;
-      telescope.enable = true;
-      mkdnflow.enable = true;
-      #image = {
-	#enable = true;
-	#backend = "ueberzug";
-      #};
-      luasnip.enable = true;
-      cmp_luasnip.enable = true;
-      nvim-cmp = {
-        enable = true;
-	autoEnableSources = true;
-      	sources = [
-	  {name = "luasnip";}
-	  {name = "nvim_lsp";}
-	  {name = "path";}
-	  {name = "buffer";}
-	  #{name = "omni";}
-	  #{name = "ultisnips";}
-	];
-	extraOptions = {
-	  snippet.expand = 
-	  ''
-	  '';
-	};
-	mapping = {
-	  "<CR>" = "cmp.mapping.confirm({ select = true })";
-	  #"<CR>" = "luasnip.expand()";
-	  "<Tab>" = {
-      	    action = "cmp.mapping.select_next_item()";
-      	    modes = [ "i" "s" ];
-      	  };
-      	  "<Down>" = {
-      	    action = "cmp.mapping.select_next_item()";
-      	    modes = [ "i" "s" ];
-      	  };
-      	  "<S-Tab>" = {
-      	    action = "cmp.mapping.select_prev_item()";
-      	    modes = [ "i" "s" ];
-      	  };
-      	  "<Up>" = {
-      	    action = "cmp.mapping.select_prev_item()";
-      	    modes = [ "i" "s" ];
-      	  };
-        };
-      };	
-      cmp-nvim-lsp.enable = true;
-      nvim-tree.enable = true;
-      treesitter = { 
-	enable = true;
-	incrementalSelection.enable = true;
-      };
-      dap.enable = true;
-      lsp = {
-        enable = true;
-	servers = {
-	  gdscript.enable = true;
-	  gdscript.autostart = true;
-	  nixd.enable = true;
-	  nixd.autostart = true;
-	  elixirls.enable = true;
-	  elixirls.autostart = true;
-	  pylsp.enable = true;
-	  pylsp.autostart = true;
-	};
-      };
-    };
-    userCommands = {
-      "Nixcfg" = {
-	command = ":e /etc/nixos/configuration.nix";
-	desc = "Edit configuration.nix";
-      };
-      "I3config" = {
-	command = ":e ~/.config/i3/config";
-	desc = "Edit i3 config";
-      };
-      "Pmd" = {
-	command = '':!pandoc -f commonmark_x -t pdf --pdf-engine=xelatex -V mainfont:FreeSans "%" -o /tmp/"%:t:r"'';
-	desc = "Compile current markdown file as pdf in /tmp";
-      };
-      "Zmd" = {
-	command = '':!kill $(ps -e | grep zathura | awk '{print $1}'); zathura /tmp/"%:t:r" &'';
-	desc = "Read current pdf file in /tmp with Zathura";
-      };
-      "Pzmd" = {
-	command = '':!pandoc -f commonmark_x -t pdf --pdf-engine=xelatex -V mainfont:FreeSans "%" | zathura - &'';
-	desc = "Compile current markdown file as pdf and pipe into zathura";
-      };
-      "Nt" = {
-	command = ":NvimTreeToggle";
-	desc = "Toggle NvimTree";
-      };
-      "Ntf" = {
-	command = ":NvimTreeFocus";
-	desc = "Focus NvimTree";
-      };
-      "Sw" = {
-	command = ":SudaWrite";
-	desc = "Write wtih sudo priviliges";
-      };
-      "Swq" = {
-	command = ":SudaWrite|q";
-	desc = "Write with sudo privilges and then quit";
-      };
-    };
-    extraConfigLua = ''
-    local alpha = require("alpha")
-    local dashboard = require("alpha.themes.dashboard")
-    dashboard.section.header.val = {
-      "          ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖          ",
-      "          ▜███▙       ▜███▙  ▟███▛          ",
-      "           ▜███▙       ▜███▙▟███▛           ",
-      "            ▜███▙       ▜██████▛            ",
-      "     ▟█████████████████▙ ▜████▛     ▟▙      ",
-      "    ▟███████████████████▙ ▜███▙    ▟██▙     ",
-      "           ▄▄▄▄▖           ▜███▙  ▟███▛     ",
-      "          ▟███▛             ▜██▛ ▟███▛      ",
-      "         ▟███▛               ▜▛ ▟███▛       ",
-      "▟███████████▛                  ▟██████████▙ ",
-      "▜██████████▛                  ▟███████████▛ ",
-      "      ▟███▛ ▟▙               ▟███▛          ",
-      "     ▟███▛ ▟██▙             ▟███▛           ",
-      "    ▟███▛  ▜███▙           ▝▀▀▀▀            ",
-      "    ▜██▛    ▜███▙ ▜██████████████████▛      ",
-      "     ▜▛     ▟████▙ ▜████████████████▛       ",
-      "           ▟██████▙       ▜███▙             ",
-      "          ▟███▛▜███▙       ▜███▙            ",
-      "         ▟███▛  ▜███▙       ▜███▙           ",
-      "         ▝▀▀▀    ▀▀▀▀▘       ▀▀▀▘           ",
-    }
-    dashboard.section.buttons.val = {
-     dashboard.button( "e", "  New file" , ":ene <BAR> startinsert <CR>"),
-     dashboard.button( "f", "  Find file", ":Telescope find_files<CR>"),
-     dashboard.button( "r", "  Recent"   , ":Telescope oldfiles<CR>"),
-     dashboard.button( "c", "󰜗  Nix Configuration" , ":e /etc/nixos/configuration.nix<CR>"),
-     dashboard.button( "q", "󰿅  Quit Nixvim", ":qa!<CR>"),
-    }
-    alpha.setup(dashboard.opts)
-    vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
-    do
-      local cmp = require('cmp')
-      cmp.setup({
-      	["snippet"] = {["expand"] = function(args) require('luasnip').lsp_expand(args.body)  end},
-      })
-    end
     '';
   };
   # List services that you want to enable:

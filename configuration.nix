@@ -16,6 +16,7 @@ in
       ./hardware-configuration.nix
       (import "${home-manager}/nixos")
       #nixvim.nixosModules.nixvim
+      ./emacs/emacs.nix
     ];
 
   # Bootloader.
@@ -59,6 +60,7 @@ in
   };
   # Enable flatpak.
   services.flatpak.enable = true;
+  #services.guix.enable = true;
 
   # Enable the XFCE Desktop Environment.
   #services.xserver.displayManager.lightdm.enable = true;
@@ -165,11 +167,14 @@ in
       unzip
       picom
       git
+      #emacs-gtk # Joining the dark side
+      ripgrep
       discord
       element-desktop
       nordic
       rose-pine-gtk-theme
       rose-pine-icon-theme
+
       # Wacky terminal apps
       neofetch
       fd
@@ -177,8 +182,8 @@ in
       ranger
       nnn
       pywal
-      alacritty-theme
       ueberzugpp
+
       # Productivity or whatever
       cura
       pandoc
@@ -199,6 +204,7 @@ in
       python2
       gnumake
       gcc
+      guix # Wait, what? You can do that?
 
       # Multimedia
       youtube-dl
@@ -212,13 +218,7 @@ in
       cmus
       audacity
 
-      ## Gaming?
-      #wine
-      #winetricks
-      #protontricks
-      #vulkan-tools
-      ## Lutris
-      ##lutris-unwrapped  # (not needed)
+      # Gaming?
       lutris
       ## Extra dependencies
       ## https://github.com/lutris/docs/
@@ -238,35 +238,55 @@ in
     ];
   };
   home-manager.users.gerald = {
-  	home.stateVersion = "23.11";
-	programs.neovim = {
-		enable = true;
-		plugins = with pkgs.vimPlugins; [
-			rose-pine
-			alpha-nvim
-			telescope-nvim
-			nvim-tree-lua
-			tabular
-			nvim-dap
-			nvim-web-devicons
-			suda-vim
-			mkdnflow-nvim
-			lualine-nvim
-			luasnip
-			nvim-treesitter
-			nvim-cmp
-			cmp_luasnip
-			cmp-nvim-lsp
-			nvim-lspconfig
-			nvim-treesitter.withAllGrammars
-		];
-	};
-
+    home.stateVersion = "23.11";
+    programs.neovim = {
+      enable = true;
+      plugins = with pkgs.vimPlugins; [
+	  rose-pine
+	  nord-nvim
+	  alpha-nvim
+	  telescope-nvim
+	  nvim-tree-lua
+	  tabular
+	  nvim-dap
+	  nvim-web-devicons
+	  suda-vim
+	  mkdnflow-nvim
+	  lualine-nvim
+	  luasnip
+	  nvim-treesitter
+	  nvim-cmp
+	  cmp_luasnip
+	  cmp-nvim-lsp
+	  nvim-lspconfig
+	  nvim-treesitter.withAllGrammars
+      ];
+    };
   };
+
+  programs.gnupg.agent = {
+    enable = true;
+  #   enableSSHSupport = true;
+  };
+
+  programs.bash = {
+    shellAliases = {
+     nixcfg = "sudo nvim /etc/nixos/configuration.nix";
+     nixrecfg = "sudo nixos-rebuild switch";
+    };
+    promptInit = ''
+      PS1="\[\033[01;32m\]\u \[\033[00m\]\[\033[02;37m\] \w \[\033[00m\] \[\033[01;36m\]» \[\033[00m\]"
+    '';
+  };
+
+  programs.nix-ld.enable = true; 
+
   # Allow unfree packages
-  nixpkgs.config = {
-    allowUnfree = true;
-    permittedInsecurePackages = [ "nix-2.16.2" "python-2.7.18.7" ];
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      permittedInsecurePackages = [ "nix-2.16.2" "python-2.7.18.7" ];
+    };
   };
 
   # List packages installed in system profile. To search, run:
@@ -305,19 +325,6 @@ in
     #dedicatedServer.openFirewall = true;
   #};
 
-  programs.gnupg.agent = {
-    enable = true;
-  #   enableSSHSupport = true;
-  };
-  programs.bash = {
-    shellAliases = {
-     nixcfg = "sudo nvim /etc/nixos/configuration.nix";
-     nixrecfg = "sudo nixos-rebuild switch";
-    };
-    promptInit = ''
-      PS1="\[\033[01;32m\]\u \[\033[00m\]\[\033[02;37m\] \w \[\033[00m\] \[\033[01;36m\]» \[\033[00m\]"
-    '';
-  };
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.

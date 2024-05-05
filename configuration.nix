@@ -22,7 +22,7 @@ in
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostName = "nixos-desktop"; # Define your hostname.
+  networking.hostName = "nixos-laptop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -204,7 +204,7 @@ in
       python2
       gnumake
       gcc
-      guix # Wait, what? You can do that?
+      #guix # Wait, what? You can do that?
 
       # Multimedia
       youtube-dl

@@ -7,15 +7,22 @@ in
       enable = true;
       package = pkgs.emacs-gtk;
       extraPackages = epkgs: [
+	epkgs.use-package
 	epkgs.meow 
 	epkgs.nord-theme
 	epkgs.sudo-edit 
-	epkgs.eglot 
 	epkgs.dashboard
+	epkgs.transient
+
+	epkgs.el-easydraw
+	epkgs.magit 
+
+	epkgs.lsp-mode 
+	epkgs.yasnippet
 	epkgs.elixir-mode
 	epkgs.company
-	epkgs.transient
-	epkgs.magit 
+	epkgs.flymake 
+	epkgs.flycheck 
       ];
       extraConfig = (builtins.readFile ./init.el);
   };

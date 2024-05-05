@@ -129,3 +129,20 @@
 (dashboard-setup-startup-hook)
 (setq dashboard-startup-banner 
       '("/home/gerald/Pictures/nix-snowflake-small.png" . "/home/gerald/Pictures/nix-snowflake-small.txt"))
+
+(require 'elixir-mode)
+
+(require 'use-package)
+(use-package lsp-mode
+  :commands lsp
+  :ensure t
+  :diminish lsp-mode
+  :hook
+  (elixir-mode . lsp)
+  :init
+  (add-to-list 'exec-path "elixir-ls"))
+
+;;(use-package yasnippet
+;;  :hook (elixir-mode . yas-minor-mode))
+;; (use-package flymake
+;;  :hook (elixir-mode . flymake-mode))

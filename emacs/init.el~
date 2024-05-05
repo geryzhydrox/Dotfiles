@@ -1,8 +1,16 @@
-;;(transient-define-prefix dispatch-goto-menu () "Documentation"
-;;			 [["Move"
-;;			   ("l" "End of line" end-of-line)
-;;			   ("h" "Beginning of line" beginning-of-line-text)
-;;			   ("m" "Mark line" meow-line)]])
+(global-display-line-numbers-mode 1)
+
+(require 'transient)
+(transient-define-prefix dispatch-goto-menu () "Documentation"
+			 [["Line"
+			   ("l" "End of line" end-of-line)
+			   ("h" "Beginning of line" beginning-of-line-text)
+			   ("m" "Mark line" meow-line)
+			   ("n" "Line number..." meow-goto-line)]
+			  ["Buffer"
+			   ("b" "Beginning of buffer" beginning-of-buffer)
+			   ("e" "End of buffer" end-of-buffer)]])
+
 (defun meow-setup ()
   ;; (setq meow-cheatsheet-physical-layout meow-cheatsheet-physical-layout-iso)
   ;; (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwertz)
@@ -71,11 +79,11 @@
 
     '("m" . meow-mark-word)
     '("M" . meow-mark-symbol)
-    ;;'("e" . dispatch-goto-menu)
+    '("g" . dispatch-goto-menu)
     '("v" . meow-block)
     '("r" . meow-join)
-    '("g" . meow-grab)
-    '("G" . meow-pop-grab)
+    '("e" . meow-grab)
+    '("E" . meow-pop-grab)
     '("s" . meow-swap-grab)
     '("S" . meow-sync-grab)
     '("q" . meow-cancel-selection)
@@ -121,3 +129,13 @@
 (dashboard-setup-startup-hook)
 (setq dashboard-startup-banner 
       '("/home/gerald/Pictures/nix-snowflake-small.png" . "/home/gerald/Pictures/nix-snowflake-small.txt"))
+(require 'elixir-mode)
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-prgorams
+	       '(elixir-mode . ("elixir-ls" "--stdio"))))
+(add-hook 'elixir-mode-hook 'eglot-ensure))
+(require 'eglot)
+(use-package yasnippet
+  :hook (elixir-mode . yas-minor-mode))
+(use-package flymake
+  :hook (elixir-mode . flymake-mode))

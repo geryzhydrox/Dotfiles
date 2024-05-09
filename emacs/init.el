@@ -129,20 +129,33 @@
 (dashboard-setup-startup-hook)
 (setq dashboard-startup-banner 
       '("/home/gerald/Pictures/nix-snowflake-small.png" . "/home/gerald/Pictures/nix-snowflake-small.txt"))
+(require 'use-package)
+;; (use-package lsp-mode
+;;   :commands lsp
+;;   :ensure t
+;;   :diminish lsp-mode
+;;   :hook
+;;   (elixir-mode . lsp)
+;;   :init
+;;   (add-to-list 'exec-path "elixir-ls"))
+(require 'eglot)
 
 (require 'elixir-mode)
+(require 'python-mode)
+(require 'nix-mode)
 
-(require 'use-package)
-(use-package lsp-mode
-  :commands lsp
-  :ensure t
-  :diminish lsp-mode
-  :hook
-  (elixir-mode . lsp)
-  :init
-  (add-to-list 'exec-path "elixir-ls"))
+(add-hook 'elixir-mode-hook 'eglot-ensure)
+(add-to-list 'eglot-server-programs `(elixir-mode "elixir-ls"))
+(add-to-list 'eglot-server-programs `(python-mode "pylsp"))
+(add-to-list 'eglot-server-programs `(nix-mode "rnix-lsp"))
 
 ;;(use-package yasnippet
 ;;  :hook (elixir-mode . yas-minor-mode))
 ;; (use-package flymake
 ;;  :hook (elixir-mode . flymake-mode))
+(require 'org)
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
+(require 'sketch-mode) 

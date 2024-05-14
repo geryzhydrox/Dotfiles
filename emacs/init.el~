@@ -1,16 +1,8 @@
-(global-display-line-numbers-mode 1)
-
-(require 'transient)
-(transient-define-prefix dispatch-goto-menu () "Documentation"
-			 [["Line"
-			   ("l" "End of line" end-of-line)
-			   ("h" "Beginning of line" beginning-of-line-text)
-			   ("m" "Mark line" meow-line)
-			   ("n" "Line number..." meow-goto-line)]
-			  ["Buffer"
-			   ("b" "Beginning of buffer" beginning-of-buffer)
-			   ("e" "End of buffer" end-of-buffer)]])
-
+;;(transient-define-prefix dispatch-goto-menu () "Documentation"
+;;			 [["Move"
+;;			   ("l" "End of line" end-of-line)
+;;			   ("h" "Beginning of line" beginning-of-line-text)
+;;			   ("m" "Mark line" meow-line)]])
 (defun meow-setup ()
   ;; (setq meow-cheatsheet-physical-layout meow-cheatsheet-physical-layout-iso)
   ;; (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwertz)
@@ -79,11 +71,11 @@
 
     '("m" . meow-mark-word)
     '("M" . meow-mark-symbol)
-    '("g" . dispatch-goto-menu)
+    ;;'("e" . dispatch-goto-menu)
     '("v" . meow-block)
     '("r" . meow-join)
-    '("e" . meow-grab)
-    '("E" . meow-pop-grab)
+    '("g" . meow-grab)
+    '("G" . meow-pop-grab)
     '("s" . meow-swap-grab)
     '("S" . meow-sync-grab)
     '("q" . meow-cancel-selection)
@@ -129,30 +121,3 @@
 (dashboard-setup-startup-hook)
 (setq dashboard-startup-banner 
       '("/home/gerald/Pictures/nix-snowflake-small.png" . "/home/gerald/Pictures/nix-snowflake-small.txt"))
-(require 'use-package)
-;; (use-package lsp-mode
-;;   :commands lsp
-;;   :ensure t
-;;   :diminish lsp-mode
-;;   :hook
-;;   (elixir-mode . lsp)
-;;   :init
-;;   (add-to-list 'exec-path "elixir-ls"))
-(require 'eglot)
-
-(require 'elixir-mode)
-(require 'python-mode)
-(require 'nix-mode)
-
-(add-hook 'elixir-mode-hook 'eglot-ensure)
-(add-to-list 'eglot-server-programs `(elixir-mode "elixir-ls"))
-(add-to-list 'eglot-server-programs `(python-mode "pylsp"))
-(add-to-list 'eglot-server-programs `(nix-mode "rnix-lsp"))
-
-;;(use-package yasnippet
-;;  :hook (elixir-mode . yas-minor-mode))
-;; (use-package flymake
-;;  :hook (elixir-mode . flymake-mode))
-(require 'org)
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
-(require 'sketch-mode) 

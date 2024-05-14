@@ -1,5 +1,11 @@
 (global-display-line-numbers-mode 1)
 
+(defun meow-append-eol ()
+  (interactive)
+  (end-of-line)
+  (meow-insert))
+
+
 (require 'transient)
 (transient-define-prefix dispatch-goto-menu () "Documentation"
 			 [["Line"
@@ -12,6 +18,11 @@
 			   ("e" "End of buffer" end-of-buffer)]])
 
 (defun meow-setup ()
+  (defun meow-insert-bol ()
+    (interactive)
+    (beginning-of-line-text)
+    (meow-insert))
+
   ;; (setq meow-cheatsheet-physical-layout meow-cheatsheet-physical-layout-iso)
   ;; (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwertz)
   (meow-thing-register 'angle
@@ -28,6 +39,7 @@
 	  (?l . line)
 	  (?b . buffer)
 	  (?d . defun)))
+  (setq meow-use-cursor-position-hack t)
 
   (meow-leader-define-key
     ;; Use SPC (0-9) for digit arguments.
@@ -64,8 +76,9 @@
     '("h" . meow-left)
     '("l" . meow-right)
 
-    '("/" . meow-search)
-    '("-" . meow-visit)
+    '("/" . isearch-forward)
+    '("-" . negative-argument)
+    '("n" . meow-search)
     ;; expansion
     '("K" . meow-prev-expand)
     '("J" . meow-next-expand)
@@ -76,6 +89,8 @@
     '("B" . meow-back-symbol)
     '("w" . meow-next-word)
     '("W" . meow-next-symbol)
+    '("A" . meow-append-eol)
+    '("I" . meow-insert-bol)
 
     '("m" . meow-mark-word)
     '("M" . meow-mark-symbol)
@@ -129,6 +144,7 @@
 (dashboard-setup-startup-hook)
 (setq dashboard-startup-banner 
       '("/home/gerald/Pictures/nix-snowflake-small.png" . "/home/gerald/Pictures/nix-snowflake-small.txt"))
+(setq dashboard-center-content t)
 (require 'use-package)
 ;; (use-package lsp-mode
 ;;   :commands lsp
@@ -159,3 +175,11 @@
  'org-babel-load-languages
  '((python . t)))
 (require 'sketch-mode) 
+(pdf-loader-install)
+(setq pdf-view-midnight-colors '("#D8DEE9" . "#2E3440"))
+(with-eval-after-load 'org
+  (require 'edraw-org))
+(defun custom-edraw ()
+  (interactive)
+  (edraw-toggle-grid-visible (edraw-current-editor))
+  (edraw-editor-set-background)) 

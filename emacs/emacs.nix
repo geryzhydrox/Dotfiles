@@ -10,12 +10,14 @@ in
 	epkgs.use-package
 	epkgs.meow 
 	epkgs.nord-theme
+	epkgs.ef-themes
 	epkgs.sudo-edit 
 	epkgs.dashboard
 	epkgs.transient
 
 	epkgs.el-easydraw
 	epkgs.sketch-mode
+	epkgs.pdf-tools
 	epkgs.magit 
 
 	epkgs.elixir-mode

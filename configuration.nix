@@ -22,7 +22,7 @@ in
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostName = "nixos-laptop"; # Define your hostname.
+  networking.hostName = "nixos-desktop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -172,6 +172,7 @@ in
       discord
       element-desktop
       nordic
+      papirus-nord
       rose-pine-gtk-theme
       rose-pine-icon-theme
 
@@ -188,7 +189,8 @@ in
       cura
       pandoc
       zathura
-      texliveSmall
+      #texliveSmall
+      texliveFull
       libreoffice-fresh
 
       # Development
